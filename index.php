@@ -1,10 +1,17 @@
 <?php
 
-define('TODAY', (new DateTime('now', new DateTimeZone('Europe/Brussels')))->format('M jS, Y'));
+require('./configs/config.php');
+require('./utils/dbaccess.php');
+require('./models/team.php');
+
+$pdo = getConnection();
+
+
+define('TODAY', (new DateTime('now', new DateTimeZone('Europe/Brussels')))->format('M l jS, Y'));
 define('FILE_PATH', 'matches.csv');
 $matches = [];
 $standings = [];
-$teams = [];
+$teams = all($pdo);
 
 function getEmptyStatsArray()
 {
@@ -66,8 +73,5 @@ uasort($standings, function ($a, $b) {
     }
     return $a['points'] > $b['points'] ? -1 : 1;
 });
-
-$teams = array_keys($standings);
-sort($teams);
 
 require('vue.php');
